@@ -1,8 +1,5 @@
 import styled from "styled-components";
-
-interface ButtonRole {
-  role: string;
-}
+import { ButtonRole, Margin0 } from "../../Interface/interface";
 
 export const LoginBox = styled.div`
   max-width: 475px;
@@ -15,8 +12,9 @@ export const LoginBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
   padding: 40px;
-  form {
+  .subtitle {
     width: 100%;
   }
   @media screen and (max-width: 590px) {
@@ -36,14 +34,14 @@ export const Title = styled.div`
   }
 `;
 
-export const LoginInput = styled.input`
+export const LoginSignupInput = styled.input<Margin0>`
   width: 100%;
   height: 47px;
   background: #fbfbfb;
   border: 2px solid #dedede;
   box-sizing: border-box;
   border-radius: 4px;
-  margin: 6px 0 43px 0;
+  margin: ${(props) => (props.margin0 ? "0" : "6px 0 43px 0")};
   font-weight: 300;
   padding: 0 10px 0 10px;
   color: #2d2d2d;
@@ -63,11 +61,16 @@ export const Button = styled.button<ButtonRole>`
   margin-bottom: ${(props) => (props.role === "kakao" ? "48px" : "21px")};
   box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.12);
   color: ${(props) => (props.role === "kakao" ? "none" : "#ffffff")};
-  background: ${(props) => (props.role === "kakao" ? "#ffffff" : "#ab86df")};
+  background: ${(props) =>
+    props.role === "kakao"
+      ? "#ffffff"
+      : props.isSubmitDisabled
+      ? "#a1a1a1"
+      : "#2d2d2d"};
   font-size: 16px;
   cursor: pointer;
   &:active {
-    background: #8b6aba;
+    background: #4d4d4d;
   }
   @media screen and (max-width: 590px) {
     height: 37px;
@@ -93,10 +96,10 @@ export const KakaoBtnContent = styled.div`
 
 export const WarningMessage = styled.div`
   color: rgb(255, 55, 55);
-  visibility: hidden;
   width: 100%;
   height: 68px;
   display: flex;
+  margin: 20px 0;
   justify-content: center;
   align-items: center;
   @media screen and (max-width: 590px) {
