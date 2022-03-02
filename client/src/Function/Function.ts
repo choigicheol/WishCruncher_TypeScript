@@ -18,3 +18,21 @@ export function InspectInput(data: string, type: string) {
       return false;
   }
 }
+
+export const priceAddComma = (price: string) => {
+  let priceLen: number = price.length - 1;
+  let result: string = "";
+  let count: number = 0;
+  if (price.length > 3) {
+    for (let i = priceLen; i >= 0; i--) {
+      result = price[i] + result;
+      count++;
+      if (count % 3 === 0 && i) {
+        result = "," + result;
+      }
+    }
+  } else {
+    result = price;
+  }
+  return result;
+};

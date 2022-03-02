@@ -3,11 +3,7 @@ export interface Color {
 }
 
 export interface SubmitDisabled {
-  isSubmitDisabled: boolean;
-}
-
-export interface ButtonRole {
-  role: string;
+  role?: string;
   isSubmitDisabled?: boolean;
 }
 
@@ -23,4 +19,21 @@ export interface LoginState {
 
 export interface IsActivate {
   isAddButton: boolean;
+}
+
+export interface UserInfo {
+  id: number;
+  email: string;
+  nickname: string;
+  loginType: boolean;
+}
+
+export interface ItemInfo {
+  id: number;
+  imagePath: string;
+  level: number;
+  name: string;
+  price: string;
+  status: number;
+  user: UserInfo;
 }
