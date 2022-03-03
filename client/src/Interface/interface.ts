@@ -1,3 +1,5 @@
+import { AxiosRequestConfig } from "axios";
+
 export interface Color {
   color: string;
 }
@@ -15,6 +17,7 @@ export interface LoginState {
   isLogin: boolean;
   id: string | null;
   accessToken: string | null;
+  user?: UserInfo;
 }
 
 export interface IsActivate {
@@ -22,7 +25,7 @@ export interface IsActivate {
 }
 
 export interface UserInfo {
-  id: number;
+  id?: number;
   email: string;
   nickname: string;
   loginType: boolean;
@@ -34,6 +37,15 @@ export interface ItemInfo {
   level: number;
   name: string;
   price: string;
-  status: number;
+  status: 0 | 1 | 2 | 3;
   user: UserInfo;
+}
+
+export interface ItemGetResponse {
+  data: { data?: ItemInfo[]; message?: string };
+  status: any;
+  statusText: string;
+  headers: any;
+  config: AxiosRequestConfig;
+  request?: any;
 }
