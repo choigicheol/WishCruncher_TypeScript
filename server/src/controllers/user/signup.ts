@@ -20,7 +20,7 @@ const signup = async (req: Request, res: Response) => {
     user.email = reqBody.email;
     user.password = encodePassword;
     user.salt = salt;
-    user.loginType = reqBody.loginType;
+    // user.loginType = reqBody.loginType;
 
     await userRepo.save(user);
     delete user.password;

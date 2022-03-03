@@ -4,6 +4,7 @@ import { Item } from "../../entity/Item";
 import { User } from "../../entity/User";
 import accessToken from "../../functions/accessToken";
 import { ItemInfo } from "../../interface";
+import { upload } from "../../functions/upload";
 
 export const get = async (req: Request, res: Response) => {
   const userIdOrMessage = await accessToken(req.headers.authorization);
@@ -21,10 +22,12 @@ export const get = async (req: Request, res: Response) => {
 
     return res.status(200).json({ data: userItem });
   }
-  return res.status(200).send(userIdOrMessage);
+  return res.status(200).json({ message: userIdOrMessage });
 };
 
 export const post = async (req: Request, res: Response) => {
+  // const imagePath = await upload(req.body.image);
+
   const userIdOrMessage = await accessToken(req.headers.authorization);
   if (typeof userIdOrMessage === "number") {
     const item: Item = new Item();
@@ -35,11 +38,14 @@ export const post = async (req: Request, res: Response) => {
 
     let reqBody: ItemInfo = req.body;
     item.name = reqBody.name;
-    item.status = reqBody.status;
     item.level = reqBody.level;
     item.price = reqBody.price;
-    item.imagePath = reqBody.imagePath;
     item.user = user;
+    if (!reqBody.imagePath) {
+      item.imagePath = "./noImage.png";
+    } else {
+      // item.imagePath = imagePath;
+    }
 
     await itemRepo.save(item);
     return res.status(201).json({ data: item });
@@ -47,5 +53,30 @@ export const post = async (req: Request, res: Response) => {
 };
 
 export const patch = async (req: Request, res: Response) => {
-  res.send("patch");
+  const userIdOrMessage = await accessToken(req.headers.authorization);
+  const itemId: number = Number(req.body.id);
+  const updateId: number = Number(req.body.update);
+
+  if (typeof userIdOrMessage === "number") {
+    const itemRepo = await getRepository(Item);
+    itemRepo.update(itemId, { status: updateId });
+
+    return res.status(200).json({ message: "success" });
+  }
+
+  return res.status(200).json({ message: userIdOrMessage });
+};
+
+export const remove = async (req: Request, res: Response) => {
+  const userIdOrMessage = await accessToken(req.headers.authorization);
+  const itemId: number = Number(req.params.itemId);
+  console.log(req, "@%@#%@$!@!$@$#%");
+  if (typeof userIdOrMessage === "number") {
+    const itemRepo = await getRepository(Item);
+    itemRepo.delete(itemId);
+
+    return res.status(200).json({ message: "success" });
+  }
+
+  return res.status(200).json({ message: userIdOrMessage });
 };

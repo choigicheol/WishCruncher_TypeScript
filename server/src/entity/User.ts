@@ -18,7 +18,7 @@ export class User {
   @Column()
   salt: string;
 
-  @Column()
+  @Column({ default: false })
   loginType: boolean;
 
   @OneToMany(() => Item, (item) => item.id)

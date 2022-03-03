@@ -15,7 +15,7 @@ export class Item {
   @Column()
   level: number;
 
-  @Column()
+  @Column({ default: 0 })
   status: number;
 
   @Column()
