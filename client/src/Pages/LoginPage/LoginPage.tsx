@@ -8,9 +8,10 @@ import {
   WarningMessage,
   KakaoBtnContent,
 } from "./LoginPage.style";
-import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setLogin } from "../../Features/loginSlice";
+import { Axioser } from "../../Axioser/Axioser";
+
 function LoginPage() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -18,6 +19,7 @@ function LoginPage() {
   const [isLoginFail, setIsLoginFail] = useState<boolean>(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const inputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.name === "email") {
       setEmail(e.target.value);
@@ -28,22 +30,14 @@ function LoginPage() {
   };
 
   const loginHandler = () => {
-    axios
-      .post(
-        "http://localhost:5000/user/login",
-        { email, password },
-        {
-          withCredentials: true,
-        }
-      )
-      .then((res) => {
-        if (!res.data.id) {
-          setIsLoginFail(true);
-        } else {
-          dispatch(setLogin(res.data));
-          navigate("/main");
-        }
-      });
+    Axioser.post("user/login", { email, password }).then((res) => {
+      if (!res.data.id) {
+        setIsLoginFail(true);
+      } else {
+        dispatch(setLogin(res.data));
+        navigate("/main");
+      }
+    });
   };
 
   useEffect(() => {
@@ -51,6 +45,7 @@ function LoginPage() {
       setIsSubmitDisabled(false);
     }
   }, [email, password]);
+
   return (
     <LoginBox>
       <Title>로그인</Title>

@@ -12,6 +12,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import { ItemInfo } from "../../Interface/interface";
+import { Axioser, setAuthorization } from "../../Axioser/Axioser";
 
 interface UploadFile {
   name: string;
@@ -57,17 +58,12 @@ function AddWish({ AddNewItemBoxHandler }: IProps) {
     formData.append("name", itemName);
     formData.append("price", itemPrice);
     formData.append("level", String(parseInt(itemLevel) + 1));
-    axios
-      .post(`${process.env.REACT_APP_API_URL}/item`, formData, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((res) => {
-        // console.log(res.data);
-        AddNewItemBoxHandler(res.data.data);
-      });
+    if (accessToken) {
+      setAuthorization(accessToken);
+    }
+    Axioser.post("/item", formData).then((res) => {
+      AddNewItemBoxHandler(res.data.data);
+    });
   };
 
   const uploadFileHandler = (file: any) => {
@@ -88,7 +84,7 @@ function AddWish({ AddNewItemBoxHandler }: IProps) {
         </AddItemButton>
       </div>
 
-      {/* AddItem input on/off */}
+      {/* 위시 등록 창 on/off */}
       {isAddButton ? (
         <>
           <AddItemContents>

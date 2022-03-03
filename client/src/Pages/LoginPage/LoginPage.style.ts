@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { ButtonRole, Margin0 } from "../../Interface/interface";
+import { SubmitDisabled, Margin0 } from "../../Interface/interface";
 
 export const LoginBox = styled.div`
   max-width: 475px;
@@ -51,7 +51,7 @@ export const LoginSignupInput = styled.input<Margin0>`
   }
 `;
 
-export const Button = styled.button<ButtonRole>`
+export const Button = styled.button<SubmitDisabled>`
   width: 100%;
   height: 47px;
   line-height: 47px;

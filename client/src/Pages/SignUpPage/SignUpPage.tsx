@@ -62,7 +62,7 @@ function SignUpPage() {
   const submitHandler = () => {
     axios
       .post(
-        `http://localhost:5000/user/signup`,
+        `${process.env.REACT_APP_API_URL}/user/signup`,
         { email, nickname, password },
         {
           withCredentials: true,
