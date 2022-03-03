@@ -3,7 +3,7 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 import login from "./loginSlice";
-
+import userInfo from "./userInfoSlice";
 const persistConfig = {
   key: "root",
   // localStorage에 저장합니다.
@@ -15,6 +15,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   login,
+  userInfo,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
