@@ -81,6 +81,13 @@ function MyPage() {
       }
     });
   }, []);
+
+  const wishCategoryData = [
+    { id: "unfinished_wish", name: "남은 위시" },
+    { id: "finish_wish", name: "이뤄낸 위시" },
+    { id: "delete_wish", name: "버린 위시" },
+  ];
+
   return (
     <MypageContainer>
       <UserProfileArea>
@@ -93,7 +100,20 @@ function MyPage() {
         </UserInfoBox>
       </UserProfileArea>
       <CategoryBox>
-        <span
+        {wishCategoryData.map((category) => {
+          return (
+            <span
+              onClick={(e) => {
+                changeCategoryHandler(e);
+              }}
+              className="category_menu"
+              id={category.id}
+            >
+              {category.name}
+            </span>
+          );
+        })}
+        {/* <span
           onClick={(e) => {
             changeCategoryHandler(e);
           }}
@@ -119,7 +139,7 @@ function MyPage() {
           id="delete_wish"
         >
           버린 위시
-        </span>
+        </span> */}
       </CategoryBox>
       <MypageItems className="mypage_items" id="unfinished_items">
         {/* ---------------- item List status 초기값은 item 버튼 변경을 위해 1로 변경 ----------------  */}
