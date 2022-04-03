@@ -67,11 +67,23 @@ function AddWish({ AddNewItemBoxHandler }: IProps) {
   };
 
   const uploadFileHandler = (file: any) => {
-    if (file) {
-      file[0].preview = URL.createObjectURL(file[0]);
-      console.log(file[0]);
+    const fReader = new FileReader();
+    fReader.readAsDataURL(file[0]);
+
+    fReader.onload = function test(e) {
+      // console.log(e.target?.result);
+      file[0].preview = e.target?.result;
       setUploadFile(file[0]);
-    }
+    };
+    // fReader.onloadend = function test(e) {
+    //   console.log(filePath);
+    // };
+    // console.log(filePath);
+    // if (file) {
+    //   file[0].preview = URL.createObjectURL(file[0]);
+    //   setUploadFile(file[0]);
+    // }
+    console.log(file[0]);
   };
   return (
     <AddItemBox>
