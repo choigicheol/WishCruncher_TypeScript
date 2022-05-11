@@ -28,7 +28,7 @@ export const WishListContainer = styled.div`
     display: flex;
     flex-direction: column;
   }
-  #result_container {
+  .result_container {
     margin: 7px 0;
     font-size: 16px;
   }
@@ -75,13 +75,13 @@ export const ResultContent = styled.div`
   margin: 0 15px;
   /* padding-bottom: 15px; */
   font-weight: 100;
-  #result_text1 {
+  .result_text1 {
     margin-right: 10px;
   }
-  #result_text2 {
+  .result_text2 {
     margin-left: 10px;
   }
-  #result_value {
+  .result_value {
     color: #ab86df;
     font-weight: 300;
   }

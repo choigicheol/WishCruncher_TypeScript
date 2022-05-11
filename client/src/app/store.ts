@@ -1,5 +1,4 @@
-import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
-import loginReducer from "../Features/loginSlice";
+import { configureStore } from "@reduxjs/toolkit";
 import { persistStore } from "redux-persist";
 import rootReducer from "../Features/index";
 

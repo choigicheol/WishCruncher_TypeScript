@@ -13,6 +13,7 @@ export const loginSlice = createSlice({
   reducers: {
     setLogin: (state, action) => {
       state.isLogin = true;
+      console.log(state, "login");
       state.id = action.payload.id;
       state.accessToken = action.payload.accessToken;
     },

@@ -8,11 +8,12 @@ import {
   AddItemOptionBox,
   ItemUploadButtonBox,
 } from "./AddWish.style";
-import axios from "axios";
+
 import { useSelector } from "react-redux";
 import { RootState } from "../../app/store";
 import { ItemInfo } from "../../Interface/interface";
 import { Axioser, setAuthorization } from "../../Axioser/Axioser";
+import { dummyClientData } from "../../dummy/dummy";
 
 interface UploadFile {
   name: string;
@@ -32,10 +33,9 @@ function AddWish({ AddNewItemBoxHandler }: IProps) {
   const [itemPrice, setItemPrice] = useState<string>("");
   const [itemLevel, setItemLevel] = useState<string>("0");
   const [uploadFile, setUploadFile] = useState<any>({ preview: "" });
-
-  const accessToken = useSelector(
-    (state: RootState) => state.login.accessToken
-  );
+  const isLogin = useSelector((state: RootState) => state.login.isLogin);
+  const items = useSelector((state: RootState) => state.items.data);
+  const accessToken = useSelector((state: RootState) => state.login.accessToken);
   const arrInputCategory = [
     { title: "제품", name: "name", value: itemName },
     { title: "가격", name: "price", value: itemPrice },
@@ -61,9 +61,20 @@ function AddWish({ AddNewItemBoxHandler }: IProps) {
     if (accessToken) {
       setAuthorization(accessToken);
     }
-    Axioser.post("/item", formData).then((res) => {
-      AddNewItemBoxHandler(res.data.data);
-    });
+    if (isLogin) {
+      Axioser.post("/item", formData).then((res) => {
+        AddNewItemBoxHandler(res.data.data);
+      });
+    } else {
+      AddNewItemBoxHandler({
+        id: items.length,
+        imagePath: "./noImage.png",
+        name: itemName,
+        price: itemPrice,
+        level: Number(itemLevel),
+        status: 0,
+      });
+    }
   };
 
   const uploadFileHandler = (file: any) => {
@@ -71,7 +82,6 @@ function AddWish({ AddNewItemBoxHandler }: IProps) {
     fReader.readAsDataURL(file[0]);
 
     fReader.onload = function test(e) {
-      // console.log(e.target?.result);
       file[0].preview = e.target?.result;
       setUploadFile(file[0]);
     };
@@ -88,10 +98,7 @@ function AddWish({ AddNewItemBoxHandler }: IProps) {
   return (
     <AddItemBox>
       <div id="add_item_button_box">
-        <AddItemButton
-          onClick={() => setIsAddButton(!isAddButton)}
-          isAddButton={isAddButton}
-        >
+        <AddItemButton onClick={() => setIsAddButton(!isAddButton)} isAddButton={isAddButton}>
           <img id="plus_icon" src="./plus_Icon.png" />
         </AddItemButton>
       </div>
@@ -105,17 +112,10 @@ function AddWish({ AddNewItemBoxHandler }: IProps) {
                 {uploadFile.preview ? (
                   <img id="thumb_image" src={uploadFile.preview} alt="+" />
                 ) : (
-                  <img
-                    id="upload_plus_image"
-                    src="./photo_plus_button.svg"
-                    alt="+"
-                  />
+                  <img id="upload_plus_image" src="./photo_plus_button.svg" alt="+" />
                 )}
               </div>
-              <input
-                type="file"
-                onChange={(e) => uploadFileHandler(e.target.files)}
-              />
+              <input type="file" onChange={(e) => uploadFileHandler(e.target.files)} />
             </AddItemPhotoBox>
             <AddItemOptionBox>
               {/* 제품, 가격, 위시레벨 input */}

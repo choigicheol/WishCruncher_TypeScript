@@ -38,7 +38,7 @@ export interface ItemInfo {
   name: string;
   price: string;
   status: 0 | 1 | 2 | 3;
-  user: UserInfo;
+  user?: UserInfo;
 }
 
 export interface ItemGetResponse {
@@ -48,4 +48,17 @@ export interface ItemGetResponse {
   headers: any;
   config: AxiosRequestConfig;
   request?: any;
+}
+
+export interface Result {
+  value: number | string;
+  text1: string;
+  text2: string;
+}
+
+export interface Item {
+  name: string;
+  price: number;
+  level: number;
+  state: number;
 }

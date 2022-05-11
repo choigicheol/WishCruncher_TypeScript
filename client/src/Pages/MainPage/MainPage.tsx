@@ -2,36 +2,25 @@ import { useEffect, useState } from "react";
 import { RootState } from "../../app/store";
 import ItemBox from "../../Component/ItemBox/ItemBox";
 import SideBar from "../../Component/SideBar/SideBar";
-import {
-  MainPageContainer,
-  WishListContainer,
-  ShareKakaoBox,
-  ResultInfo,
-  ResultContent,
-} from "./MainPage.style";
+import { MainPageContainer, WishListContainer, ShareKakaoBox, ResultInfo, ResultContent } from "./MainPage.style";
 import { useSelector, useDispatch } from "react-redux";
 import AddWish from "../../Component/AddWish/AddWish";
+import { priceAddComma } from "../../Function/Function";
 
-import { ItemInfo, ItemGetResponse } from "../../Interface/interface";
+import { ItemInfo, ItemGetResponse, Result } from "../../Interface/interface";
 import { Axioser, setAuthorization } from "../../Axioser/Axioser";
 import { setUserInfo } from "../../Features/userInfoSlice";
-
-interface Result {
-  value: number;
-  text1: string;
-  text2: string;
-}
+import { addItems, setItems } from "../../Features/itemsSlice";
+import { dummyClientData } from "../../dummy/dummy";
 
 function MainPage() {
-  const accessToken = useSelector(
-    (state: RootState) => state.login.accessToken
-  );
+  const accessToken = useSelector((state: RootState) => state.login.accessToken);
   const userId = useSelector((state: RootState) => state.login.id);
+  const userNickname = useSelector((state: RootState) => state.userInfo.nickname);
   const isLogin = useSelector((state: RootState) => state.login.isLogin);
-  const userNickname = useSelector(
-    (state: RootState) => state.userInfo.nickname
-  );
   const userEmail = useSelector((state: RootState) => state.userInfo.email);
+  const items = useSelector((state: RootState) => state.items.data);
+
   const dispatch = useDispatch();
   const [itemList, setItemList] = useState<ItemInfo[]>([]);
   const [showResult, setShowResult] = useState<boolean>(false);
@@ -50,23 +39,28 @@ function MainPage() {
 
   // wish Item 추가 시 itemList 업데이트
   const AddNewItemBoxHandler = (newItem: ItemInfo) => {
-    setItemList([newItem, ...itemList]);
+    // setItemList([newItem, ...itemList]);
+    dispatch(addItems(newItem));
   };
 
   // 사이드바 결과보기 클릭시 월 여유금액을 인자로 받아 결과 창에 전달하귀 위한 handler
-  const resultHandler = (sumMoney: string) => {
-    setFinishMoney(sumMoney);
+  const resultHandler = (sumMoney: string, wishLevel: number) => {
     const resultMoney = parseInt(sumMoney.split(",").join(""));
     let itemSumMoney = 0;
     itemList.map((item) => {
-      itemSumMoney += parseInt(item.price.split(",").join(""));
+      if (wishLevel <= item.level) itemSumMoney += parseInt(item.price.split(",").join(""));
     });
+
+    setFinishMoney(priceAddComma(String(itemSumMoney)));
+
     const resultMonth: number = Number((itemSumMoney / resultMoney).toFixed(1));
     const resultYear: number = Number((resultMonth / 12).toFixed(1));
     let resultDay: number = Number((resultYear * 365).toFixed(0));
+
     if (resultYear === 0) {
       resultDay = Number((resultMonth * 31).toFixed(0));
     }
+
     const resultHour = Number((resultDay * 24).toFixed(0));
     const resultMillisecond = resultHour * 3600 * 1000;
     const nowDate = new Date().getTime();
@@ -74,16 +68,17 @@ function MainPage() {
     const finishYear = finishDay.getFullYear();
     const finishMonth = finishDay.getMonth() + 1;
     const finishDate = finishDay.getDate();
+
     setFinishDate(`${finishYear}년 ${finishMonth}월 ${finishDate}일`);
     setResultTime([
       {
-        value: resultMoney,
+        value: sumMoney,
         text1: "목표 위시리스트를 이루기위해 매월",
         text2: "원씩 때려넣어야",
       },
       {
         value: resultYear,
-        text1: "",
+        text1: "총",
         text2: "년이 걸립니다.",
       },
       {
@@ -116,16 +111,27 @@ function MainPage() {
         dispatch(setUserInfo(res.data.data));
       }
     });
+  }, []);
 
-    Axioser.get("/item").then((res: ItemGetResponse) => {
-      if (res.data.data) {
-        const unfinishedItem = res.data.data.filter((item) => {
-          return item.status === 0;
-        });
-        setItemList(unfinishedItem.reverse());
-      }
-    });
-  }, [userId]);
+  useEffect(() => {
+    if (isLogin) {
+      Axioser.get("/item").then((res: ItemGetResponse) => {
+        if (res.data.data) {
+          dispatch(setItems(res.data.data));
+        }
+      });
+    } else {
+      dispatch(setItems(dummyClientData));
+    }
+  }, [isLogin]);
+
+  useEffect(() => {
+    if (items) {
+      setItemList([...items]);
+    } else {
+      setItemList([]);
+    }
+  }, [items]);
 
   return (
     <MainPageContainer>
@@ -143,21 +149,10 @@ function MainPage() {
               {resultTime !== null ? (
                 resultTime.map((result) => {
                   return (
-                    <div
-                      key={result.text1 + result.text2}
-                      id="result_container"
-                    >
-                      {result.text1 ? (
-                        <span id="result_text1">{result.text1}</span>
-                      ) : (
-                        <></>
-                      )}
-                      <span id="result_value">{result.value}</span>
-                      {result.text2 ? (
-                        <span id="result_text2">{result.text2}</span>
-                      ) : (
-                        <></>
-                      )}
+                    <div key={result.text1 + result.text2} className="result_container">
+                      <span className="result_text1">{result.text1}</span>
+                      <span className="result_value">{result.value}</span>
+                      <span className="result_text2">{result.text2}</span>
                     </div>
                   );
                 })
@@ -187,13 +182,9 @@ function MainPage() {
         <div id="user_item_area">
           {itemList[0] !== undefined ? (
             itemList.map((item) => {
-              return (
-                <ItemBox
-                  clickItemIdHandler={clickItemIdHandler}
-                  key={item.id}
-                  item={item}
-                />
-              );
+              if (item.status === 0) {
+                return <ItemBox clickItemIdHandler={clickItemIdHandler} key={item.name + item.id} item={item} />;
+              }
             })
           ) : (
             <></>
