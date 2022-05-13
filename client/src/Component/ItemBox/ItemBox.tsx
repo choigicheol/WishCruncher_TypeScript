@@ -55,43 +55,34 @@ function ItemBox({ item, clickItemIdHandler }: IProps) {
     if (accessToken) {
       setAuthorization(accessToken);
     }
-
-    if (btnId[0] === "0") {
-      if (btnId[2] === "btn1") {
-        // TODO: 수정
-      } else {
+    if (clickItemIdHandler) {
+      if (btnId[0] === "0") {
+        if (btnId[2] === "btn1") {
+          // TODO: 수정
+        } else {
+          Axioser.delete(`/item/${btnId[1]}`).then((res) => {
+            clickItemIdHandler(btnId[1]);
+          });
+        }
+      } else if (btnId[0] === "1") {
+        if (btnId[2] === "btn1") {
+          Axioser.patch("/item", { id: btnId[1], update: 2 }).then((res) => {
+            clickItemIdHandler(btnId[1]);
+          });
+        } else {
+          Axioser.patch("/item", { id: btnId[1], update: 3 }).then((res) => {
+            clickItemIdHandler(btnId[1]);
+          });
+        }
+      } else if (btnId[0] === "2") {
         Axioser.delete(`/item/${btnId[1]}`).then((res) => {
-          if (clickItemIdHandler) {
-            clickItemIdHandler(btnId[1]);
-          }
+          clickItemIdHandler(btnId[1]);
+        });
+      } else if (btnId[0] === "3") {
+        Axioser.patch("/item", { id: btnId[1], update: 0 }).then((res) => {
+          clickItemIdHandler(btnId[1]);
         });
       }
-    } else if (btnId[0] === "1") {
-      if (btnId[2] === "btn1") {
-        Axioser.patch("/item", { id: btnId[1], update: 2 }).then((res) => {
-          if (clickItemIdHandler) {
-            clickItemIdHandler(btnId[1]);
-          }
-        });
-      } else {
-        Axioser.patch("/item", { id: btnId[1], update: 3 }).then((res) => {
-          if (clickItemIdHandler) {
-            clickItemIdHandler(btnId[1]);
-          }
-        });
-      }
-    } else if (btnId[0] === "2") {
-      Axioser.delete(`/item/${btnId[1]}`).then((res) => {
-        if (clickItemIdHandler) {
-          clickItemIdHandler(btnId[1]);
-        }
-      });
-    } else if (btnId[0] === "3") {
-      Axioser.patch("/item", { id: btnId[1], update: 0 }).then((res) => {
-        if (clickItemIdHandler) {
-          clickItemIdHandler(btnId[1]);
-        }
-      });
     }
   };
 

@@ -1,12 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  HeaderContainer,
-  HeaderBox,
-  Logo,
-  MenuNav,
-  LoginState,
-} from "./Header.style";
+import { HeaderContainer, HeaderBox, Logo, MenuNav, LoginState } from "./Header.style";
 import { RootState } from "../../app/store";
 import { useDispatch, useSelector } from "react-redux";
 import { setLogout } from "../../Features/loginSlice";
@@ -17,7 +11,6 @@ function Header() {
   const [isLogoutModal, setIsLogoutModal] = useState(false);
 
   const test = () => {
-    console.log(isLogin);
     dispatch(setLogout());
   };
 
@@ -33,13 +26,7 @@ function Header() {
           <Link to="/main">MainPage</Link>
           <Link to="/user">MyPage</Link>
         </MenuNav>
-        <LoginState>
-          {isLogin ? (
-            <span onClick={() => test()}>Logout</span>
-          ) : (
-            <Link to="/login">Login</Link>
-          )}
-        </LoginState>
+        <LoginState>{isLogin ? <span onClick={() => test()}>Logout</span> : <Link to="/login">Login</Link>}</LoginState>
       </HeaderBox>
     </HeaderContainer>
   );

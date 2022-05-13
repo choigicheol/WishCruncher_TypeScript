@@ -12,16 +12,14 @@ import {
 } from "./SideBar.style";
 
 interface IProps {
-  resultHandler: (sumMoney: string) => void;
+  resultHandler: (sumMoney: string, wishLevel: number) => void;
 }
 
 function SideBar({ resultHandler }: IProps) {
   const [sumMoney, setSumMoney] = useState<string>("0");
   const [wishLevel, setWishLevel] = useState<number>(0);
 
-  const wishLevelHandler = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const wishLevelHandler = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     const btn: HTMLButtonElement = e.currentTarget;
     if (btn.name === "wish_level_minus" && wishLevel > 0) {
       setWishLevel(wishLevel - 1);
@@ -30,20 +28,11 @@ function SideBar({ resultHandler }: IProps) {
     }
   };
 
-  const sumMoneyHandler = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const sumMoneyHandler = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     const btn: HTMLButtonElement = e.currentTarget;
     const removeComma = parseInt(sumMoney.split(",").join(""));
-    if (btn.name === "won1000000") {
-      setSumMoney(priceAddComma(String(removeComma + 1000000)));
-    } else if (btn.name === "won100000") {
-      setSumMoney(priceAddComma(String(removeComma + 100000)));
-    } else if (btn.name === "won50000") {
-      setSumMoney(priceAddComma(String(removeComma + 50000)));
-    } else if (btn.name === "won10000") {
-      setSumMoney(priceAddComma(String(removeComma + 10000)));
-    }
+
+    setSumMoney(priceAddComma(String(removeComma + Number(btn.name.slice(3)))));
   };
 
   return (
@@ -123,10 +112,10 @@ function SideBar({ resultHandler }: IProps) {
           </WishLevelOperationButton>
         </WishLevelBox>
       </OperationWishLevelBox>
-      {/* ---------------- 결과 보기 ----------------  */}
+      {/* ---------------- 결과 보기 버튼 ----------------  */}
       <SidebarSubmitButton
         onClick={() => {
-          resultHandler(sumMoney);
+          resultHandler(sumMoney, wishLevel);
         }}
       >
         결과보기

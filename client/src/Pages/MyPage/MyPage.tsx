@@ -14,9 +14,7 @@ import { RootState } from "../../app/store";
 import { Axioser, setAuthorization } from "../../Axioser/Axioser";
 
 function MyPage() {
-  const accessToken = useSelector(
-    (state: RootState) => state.login.accessToken
-  );
+  const accessToken = useSelector((state: RootState) => state.login.accessToken);
   // 마이페이지 itemList
   const [itemList, setItemList] = useState<ItemInfo[]>([]);
 
@@ -30,9 +28,7 @@ function MyPage() {
   };
 
   // 마이페이지 item 완료, 삭제, 버리기, 돌리기 버튼 클릭시 item status 변경
-  const changeCategoryHandler = (
-    e: React.MouseEvent<HTMLSpanElement, MouseEvent>
-  ) => {
+  const changeCategoryHandler = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
     const btn: HTMLElement = e.currentTarget;
     if (accessToken) {
       setAuthorization(accessToken);
@@ -148,13 +144,7 @@ function MyPage() {
             if (!item.status) {
               item.status = 1;
             }
-            return (
-              <ItemBox
-                clickItemIdHandler={clickItemIdHandler}
-                key={item.id}
-                item={item}
-              />
-            );
+            return <ItemBox clickItemIdHandler={clickItemIdHandler} key={item.id} item={item} />;
           })
         ) : (
           <></>
